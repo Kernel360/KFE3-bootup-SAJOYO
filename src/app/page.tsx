@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 
 const Home = () => {
@@ -22,6 +24,44 @@ const Home = () => {
           </li>
           <li className="tracking-[-.01em]">Save and see your changes instantly.</li>
         </ol>
+        {/* 버튼 예시들 */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Button 컴포넌트 테스트</CardTitle>
+            <CardDescription>다양한 variant와 size의 Button 컴포넌트들</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-3">
+              <Button variant="default">Default</Button>
+              <Button variant="secondary">Secondary</Button>
+              <Button variant="destructive">Destructive</Button>
+              <Button variant="outline">Outline</Button>
+              <Button variant="ghost">Ghost</Button>
+              <Button variant="link">Link</Button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Button size="sm">Small</Button>
+              <Button size="default">Default</Button>
+              <Button size="lg">Large</Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 카드 예시들 */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Tailwind CSS v4</CardTitle>
+              <CardDescription>최신 버전의 Tailwind CSS 적용 완료</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm">
+                CSS 변수 기반의 테마 시스템과 다크모드 지원이 적용되었습니다.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <a
