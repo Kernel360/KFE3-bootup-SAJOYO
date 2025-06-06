@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Button } from './Button';
+import { IconTextButton } from './IconTextButton'; 
 
-const meta: Meta<typeof Button> = {
-  title: 'Example/Button',
-  component: Button,
+const meta: Meta<typeof IconTextButton> = {
+  title: 'Example/IconTextButton',
+  component: IconTextButton,
   tags: ['autodocs'],
   args: {
     label: 'Click me',
@@ -14,7 +14,7 @@ const meta: Meta<typeof Button> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Button>;
+type Story = StoryObj<typeof IconTextButton>;
 
 export const Primary: Story = {
   args: {

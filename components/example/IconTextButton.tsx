@@ -27,7 +27,7 @@ const variantStyle: Record<'primary' | 'secondary' | 'tertiary', Record<'enabled
   },
 };
 
-export const Button = ({ variant = 'primary', size = 'medium', label, disabled = false, onClick, ...props}: ButtonProps) => {
+export const IconTextButton = ({ variant = 'primary', size = 'medium', label, disabled = false, onClick, ...props}: ButtonProps) => {
 
   if (variant === 'tertiary' && size !== 'medium') return null;
 
