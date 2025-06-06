@@ -1,51 +1,20 @@
+import React, { ComponentType, SVGProps } from 'react';
+
 export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
-  width?: 'auto' | 'full';
+  variant?: 'primary' | 'secondary' | 'ghost';
   disabled?: boolean;
-  loading?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  children: React.ReactNode;
+  Icon?: ComponentType<SVGProps<SVGSVGElement>>;
+  children?: React.ReactNode;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
-  ariaLabel?: string;
+  ariaLabel?: string; // 접근성 지원: 아이콘만 있는 버튼에 aria-label 필수
   className?: string;
 }
 
-// 로딩 스피너 컴포넌트
-const Spinner: React.FC<{ size: 'sm' | 'md' | 'lg' }> = ({ size }) => {
-  const sizeClass = {
-    sm: 'w-3 h-3',
-    md: 'w-4 h-4',
-    lg: 'w-5 h-5',
-  }[size];
-
-  return (
-    <svg
-      className={`animate-spin ${sizeClass}`}
-      xmlns='http://www.w3.org/2000/svg'
-      fill='none'
-      viewBox='0 0 24 24'
-    >
-      <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
-      <path
-        className='opacity-75'
-        fill='currentColor'
-        d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-      />
-    </svg>
-  );
-};
-
 export const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
-  size = 'md',
-  width = 'auto',
   disabled = false,
-  loading = false,
-  leftIcon,
-  rightIcon,
+  Icon,
   children,
   onClick,
   type = 'button',
@@ -53,76 +22,76 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
+  // 버튼 타입 결정: 아이콘만 / 텍스트만 / 아이콘+텍스트
+  const isIconOnly = Icon && !children;
+  const hasIcon = !!Icon;
+  const hasText = !!children;
+
   // 기본 스타일
   const baseStyles = `
     inline-flex items-center justify-center
-    font-medium transition-all duration-150
-    border border-transparent
-    focus:outline-none focus:ring-2 focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed
-    ${width === 'full' ? 'w-full' : 'w-auto'}
+    font-medium transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-[var(--color-main)] focus:ring-offset-2
+    disabled:cursor-not-allowed
+    rounded-[3px]
+    text-[16px]
   `;
 
-  // 크기별 스타일
-  const sizeStyles = {
-    sm: `
-      h-9 px-3 gap-1
-      text-xs rounded-md
-      focus:ring-1 focus:ring-offset-1
-    `,
-    md: `
-      h-11 px-4 gap-2
-      text-sm rounded-lg
-      focus:ring-2 focus:ring-offset-2
-    `,
-    lg: `
-      h-12 px-6 gap-2
-      text-base rounded-lg
-      focus:ring-2 focus:ring-offset-2
-    `,
+  // 패딩 스타일 (아이콘만 있는 버튼 vs 일반 버튼)
+  const paddingStyles = isIconOnly
+    ? 'p-[20px]'
+    : hasIcon && hasText
+    ? 'py-[15px] pl-[12px] pr-[16px]'
+    : 'py-[15px] px-[16px]'; // 텍스트만
+
+  // 아이콘과 텍스트 간격
+  const gapStyles = hasIcon && hasText ? 'gap-[6px]' : '';
+
+  // 변형별 스타일
+  const variantStyles = {
+    primary: {
+      enabled: `
+        bg-[var(--color-main)] text-white
+        hover:bg-[var(--color-main-text)]
+        active:bg-[var(--color-main-text)]
+      `,
+      disabled: `
+        bg-[var(--color-disabled)] text-[var(--color-placeholder)]
+      `,
+    },
+    secondary: {
+      enabled: `
+        bg-white border border-[var(--color-main)] text-[var(--color-main)]
+        hover:bg-[var(--color-main-lightest)]
+        active:bg-[var(--color-main-lighter)]
+      `,
+      disabled: `
+        bg-white border border-[var(--color-disabled)] text-[var(--color-disabled)]
+      `,
+    },
+    ghost: {
+      enabled: `
+        bg-transparent text-[var(--color-main)]
+        hover:bg-[var(--color-main-lightest)]
+        active:bg-[var(--color-main-lighter)]
+      `,
+      disabled: `
+        bg-transparent text-[var(--color-disabled)]
+      `,
+    },
   };
 
-  // 변형별 스타일 (CSS 변수 활용)
-  const variantStyles = {
-    primary: `
-      bg-[var(--color-main)] text-white
-      hover:bg-[var(--color-main-text)] 
-      focus:ring-[var(--color-main)]
-      active:bg-[var(--color-main-text)]
-    `,
-    secondary: `
-      bg-[var(--color-background)] text-[var(--color-body)]
-      border-[var(--color-line)]
-      hover:bg-[var(--color-line)] 
-      focus:ring-[var(--color-main)]
-      active:bg-[var(--color-disabled)]
-    `,
-    ghost: `
-      bg-transparent text-[var(--color-main)]
-      hover:bg-[var(--color-main-lightest)]
-      focus:ring-[var(--color-main)]
-      active:bg-[var(--color-main-lighter)]
-    `,
-    outline: `
-      bg-transparent text-[var(--color-main)] 
-      border-[var(--color-main)]
-      hover:bg-[var(--color-main)] hover:text-white
-      focus:ring-[var(--color-main)]
-      active:bg-[var(--color-main-text)] active:text-white
-    `,
-    danger: `
-      bg-[var(--color-danger)] text-white
-      hover:bg-[var(--color-danger-light)]
-      focus:ring-[var(--color-danger)]
-      active:bg-[var(--color-danger-light)]
-    `,
-  };
+  // 현재 상태에 따른 스타일 선택
+  const currentVariantStyle = disabled
+    ? variantStyles[variant].disabled
+    : variantStyles[variant].enabled;
 
   // 최종 클래스명 조합
   const buttonClass = `
     ${baseStyles}
-    ${sizeStyles[size]}
-    ${variantStyles[variant]}
+    ${paddingStyles}
+    ${gapStyles}
+    ${currentVariantStyle}
     ${className}
   `
     .replace(/\s+/g, ' ')
@@ -130,32 +99,30 @@ export const Button: React.FC<ButtonProps> = ({
 
   // 클릭 핸들러
   const handleClick = () => {
-    if (!disabled && !loading && onClick) {
+    if (!disabled && onClick) {
       onClick();
     }
   };
+
+  // 접근성 검증 (아이콘만 있는 버튼은 ariaLabel 필수)
+  if (isIconOnly && !ariaLabel) {
+    console.warn('Button: 아이콘만 있는 버튼에는 ariaLabel이 필요합니다.');
+  }
 
   return (
     <button
       type={type}
       className={buttonClass}
-      disabled={disabled || loading}
+      disabled={disabled}
       onClick={handleClick}
       aria-label={ariaLabel}
       {...props}
     >
-      {/* 왼쪽 아이콘 또는 로딩 스피너 */}
-      {loading ? (
-        <Spinner size={size} />
-      ) : (
-        leftIcon && <span className='flex-shrink-0'>{leftIcon}</span>
-      )}
+      {/* 아이콘 렌더링 */}
+      {Icon && <Icon width={16} height={16} className='flex-shrink-0' />}
 
-      {/* 버튼 텍스트 */}
-      <span className={loading ? 'opacity-70' : ''}>{children}</span>
-
-      {/* 오른쪽 아이콘 (로딩 중이 아닐 때만) */}
-      {!loading && rightIcon && <span className='flex-shrink-0'>{rightIcon}</span>}
+      {/* 텍스트 렌더링 */}
+      {children && <span className='flex-shrink-0'>{children}</span>}
     </button>
   );
 };
