@@ -1,96 +1,24 @@
 import React, { useCallback, useEffect } from 'react';
 import { Button } from '../Button/Button';
 
-// Modal Props 인터페이스 정의
 export interface ModalProps {
-  /**
-   * 모달 열림/닫힘 상태
-   */
   isOpen: boolean;
-
-  /**
-   * 모달 닫기 콜백
-   */
   onClose: () => void;
-
-  /**
-   * 모달 제목
-   */
   title?: string;
-
-  /**
-   * 모달 내용
-   */
   children: React.ReactNode;
-
-  /**
-   * 확인 버튼 클릭 핸들러
-   */
   onConfirm?: () => void;
-
-  /**
-   * 취소 버튼 클릭 핸들러
-   */
   onCancel?: () => void;
-
-  /**
-   * 확인 버튼 텍스트
-   */
   confirmText?: string;
-
-  /**
-   * 취소 버튼 텍스트
-   */
   cancelText?: string;
-
-  /**
-   * 모달 크기
-   */
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-
-  /**
-   * 모달 변형 (스타일)
-   */
   variant?: 'default' | 'danger' | 'success' | 'warning';
-
-  /**
-   * 배경 클릭시 닫기 여부
-   */
   closeOnBackdropClick?: boolean;
-
-  /**
-   * ESC 키로 닫기 여부
-   */
   closeOnEscape?: boolean;
-
-  /**
-   * 우상단 X 버튼 표시 여부
-   */
   showCloseButton?: boolean;
-
-  /**
-   * 버튼 영역 숨김 여부
-   */
   hideActions?: boolean;
-
-  /**
-   * 접근성을 위한 aria-label
-   */
   ariaLabel?: string;
-
-  /**
-   * 접근성을 위한 aria-describedby
-   */
   ariaDescribedBy?: string;
-
-  /**
-   * 버튼 레이아웃 방향
-   */
   buttonLayout?: 'horizontal' | 'vertical';
-
-  /**
-   * 추가 CSS 클래스
-   */
   className?: string;
 }
 
