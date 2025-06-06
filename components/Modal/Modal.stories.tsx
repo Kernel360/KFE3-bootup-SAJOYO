@@ -2,57 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { Button } from '../Button/Button';
 import { Modal, type ModalProps } from './Modal';
+// React Icons 예시
+import { FiAlertTriangle, FiCheckCircle, FiClock, FiHeart, FiMapPin, FiStar } from 'react-icons/fi';
 
-// 아이콘 예시
-const InfoIcon = () => (
-  <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='2' />
-    <path
-      d='M12 16V12M12 8H12.01'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
+// 🔧 Modal을 제어하는 Wrapper 컴포넌트
+interface ModalWrapperProps extends Omit<ModalProps, 'isOpen' | 'onClose'> {
+  children: React.ReactNode;
+}
 
-const WarningIcon = () => (
-  <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <path
-      d='M10.29 3.86L1.82 18A2 2 0 003.54 21H20.46A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z'
-      stroke='currentColor'
-      strokeWidth='2'
-    />
-    <path
-      d='M12 9V13M12 17H12.01'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <path
-      d='M22 11.08V12A10 10 0 1112 2A10 10 0 0122 11.08Z'
-      stroke='currentColor'
-      strokeWidth='2'
-    />
-    <path
-      d='M9 11L12 14L22 4'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
-
-// Modal을 제어하는 Wrapper 컴포넌트
-const ModalWrapper = ({ children, ...modalProps }: any) => {
+const ModalWrapper = ({ children, ...modalProps }: ModalWrapperProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -65,11 +23,6 @@ const ModalWrapper = ({ children, ...modalProps }: any) => {
   );
 };
 
-// ModalWrapper Props 타입 정의
-interface ModalWrapperProps extends Omit<ModalProps, 'isOpen' | 'onClose'> {
-  children: React.ReactNode;
-}
-
 const meta = {
   title: 'Components/Modal',
   component: ModalWrapper,
@@ -78,24 +31,29 @@ const meta = {
     docs: {
       description: {
         component: `
-## Modal 컴포넌트
+## 바텀 Modal 컴포넌트
 
-사용자의 주의를 집중시키고 중요한 정보를 표시하거나 액션을 요구하는 오버레이 컴포넌트입니다.
+지역기반 중고거래 경매 모바일 웹앱에 최적화된 바텀 모달 컴포넌트입니다.
 
-### 설계 원칙
-- **독립적 기능**: 완전한 모달 기능을 자체적으로 제공
-- **접근성 우선**: 키보드 네비게이션 지원
-- **유연한 확장**: 다양한 크기와 스타일 변형 지원
-- **모바일 최적화**: 터치 친화적인 인터랙션
+### 🎯 설계 원칙
+- **단일 책임 원칙**: 사용자 확인/선택만 담당
+- **의존성 최소화**: Button 컴포넌트 재사용, react-icons만 추가 의존
+- **아토믹 디자인**: Organism 레벨 (Button + 레이아웃 조합)
 
-### 주요 기능
-- 5가지 크기 옵션 (sm, md, lg, xl, full)
-- 4가지 스타일 변형 (default, danger, success, warning)
-- 배경 클릭/ESC 키로 닫기 지원
-- 자동 포커스 관리 및 스크롤 방지
+### 📱 바텀 모달 특징
+- **크기**: 310px 고정 너비
+- **패딩**: 상단 30px, 하단 35px, 좌우 25px
+- **모서리**: 18px 둥근 모서리 (상단만)
+- **그림자**: 3px 3px 15px rgba(0,0,0,0.1)
+- **애니메이션**: 아래에서 위로 슬라이드업
 
-### 사용법
-각 스토리는 "모달 열기" 버튼을 클릭하여 모달을 확인할 수 있습니다.
+### 🔧 주요 기능
+- **2가지 버튼 레이아웃**: 가로/세로 배치
+- **접근성**: ESC 키, 배경 클릭 닫기, 포커스 관리
+- **커스터마이징**: 제목, 버튼 텍스트, 레이아웃 옵션
+
+### 🛍️ 경매 앱 사용 시나리오
+각 스토리는 실제 경매 앱에서 사용될 수 있는 모달 예시들입니다.
         `,
       },
     },
@@ -106,15 +64,14 @@ const meta = {
       control: 'text',
       description: '모달 제목',
     },
-    size: {
+    buttonLayout: {
       control: { type: 'select' },
-      options: ['sm', 'md', 'lg', 'xl', 'full'],
-      description: '모달 크기',
+      options: ['horizontal', 'vertical'],
+      description: '버튼 레이아웃 방향',
     },
-    variant: {
-      control: { type: 'select' },
-      options: ['default', 'danger', 'success', 'warning'],
-      description: '모달 스타일 변형',
+    hideActions: {
+      control: 'boolean',
+      description: '액션 버튼 영역 숨김 여부',
     },
     closeOnBackdropClick: {
       control: 'boolean',
@@ -123,14 +80,6 @@ const meta = {
     closeOnEscape: {
       control: 'boolean',
       description: 'ESC 키로 닫기 여부',
-    },
-    showCloseButton: {
-      control: 'boolean',
-      description: '우상단 X 버튼 표시 여부',
-    },
-    hideActions: {
-      control: 'boolean',
-      description: '액션 버튼 영역 숨김 여부',
     },
     confirmText: {
       control: 'text',
@@ -154,137 +103,50 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// === 기본 스토리들 ===
-
-export const Default: Story = {
+export const AuctionSuccess: Story = {
   args: {
-    title: '알림',
-    confirmText: '확인',
-    children: (
-      <p className='text-body'>
-        이것은 기본 모달입니다. 간단한 메시지나 알림을 표시할 때 사용합니다.
-      </p>
-    ),
-  },
-};
-
-export const Confirmation: Story = {
-  args: {
-    title: '삭제 확인',
-    variant: 'danger',
-    confirmText: '삭제',
-    cancelText: '취소',
+    title: '입찰에 성공하였습니다!',
+    confirmText: '결제하러 가기',
+    buttonLayout: 'vertical',
     children: (
       <div className='space-y-4'>
-        <div className='flex items-start gap-3'>
-          <InfoIcon />
-          <div>
-            <p className='text-body font-medium mb-2'>정말로 삭제하시겠습니까?</p>
-            <p className='text-caption'>
-              삭제된 데이터는 복구할 수 없습니다. 신중하게 결정해 주세요.
-            </p>
-          </div>
+        <p className='text-body'>
+          3시간 이내에 결제를 완료해주세요.
+          <br />
+          시간 내 결제가 없을 경우,
+          <br />
+          다른 분께 입찰 기회가 넘어갑니다.
+        </p>
+        <div className='flex items-center justify-center gap-2 text-[var(--color-main)]'>
+          <FiClock width={16} height={16} />
+          <span className='text-caption'>남은 시간 2:58:31</span>
         </div>
       </div>
     ),
   },
-};
-
-export const Success: Story = {
-  args: {
-    title: '입찰 완료',
-    variant: 'success',
-    confirmText: '확인',
-    children: (
-      <div className='text-center space-y-4'>
-        <div className='flex justify-center text-[var(--color-alert)]'>
-          <CheckIcon />
-        </div>
-        <div>
-          <p className='text-body font-medium mb-2'>입찰이 성공적으로 완료되었습니다!</p>
-          <p className='text-caption'>경매 결과는 이메일로 알려드리겠습니다.</p>
-        </div>
-      </div>
-    ),
-  },
-};
-
-export const Warning: Story = {
-  args: {
-    title: '경매 마감 임박',
-    variant: 'warning',
-    confirmText: '입찰하기',
-    cancelText: '나중에',
-    children: (
-      <div className='space-y-4'>
-        <div className='flex items-start gap-3'>
-          <div className='text-[var(--color-warning)]'>
-            <WarningIcon />
-          </div>
-          <div>
-            <p className='text-body font-medium mb-2'>시간이 3분 남았습니다!</p>
-            <p className='text-caption'>
-              경매가 곧 마감됩니다. 지금 입찰하지 않으면 기회를 놓칠 수 있습니다.
-            </p>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-};
-
-// === 크기별 스토리 ===
-
-export const Sizes: Story = {
-  render: () => (
-    <div className='space-y-4'>
-      <div className='grid grid-cols-2 gap-4'>
-        <ModalWrapper size='sm' title='Small Modal' confirmText='확인'>
-          <p className='text-body'>작은 크기의 모달입니다.</p>
-        </ModalWrapper>
-
-        <ModalWrapper size='md' title='Medium Modal' confirmText='확인'>
-          <p className='text-body'>중간 크기의 모달입니다.</p>
-        </ModalWrapper>
-
-        <ModalWrapper size='lg' title='Large Modal' confirmText='확인'>
-          <p className='text-body'>큰 크기의 모달입니다.</p>
-        </ModalWrapper>
-
-        <ModalWrapper size='xl' title='Extra Large Modal' confirmText='확인'>
-          <p className='text-body'>매우 큰 크기의 모달입니다.</p>
-        </ModalWrapper>
-      </div>
-
-      <ModalWrapper size='full' title='Full Screen Modal' confirmText='확인'>
-        <div className='space-y-4'>
-          <p className='text-body'>전체 화면 모달입니다.</p>
-          <p className='text-caption'>
-            모바일에서 복잡한 폼이나 많은 콘텐츠를 표시할 때 유용합니다.
-          </p>
-        </div>
-      </ModalWrapper>
-    </div>
-  ),
   parameters: {
     docs: {
       description: {
-        story: '다양한 크기의 모달들입니다. 콘텐츠의 양과 중요도에 따라 적절한 크기를 선택하세요.',
+        story: '📱 첫 번째 이미지와 동일한 모달: 입찰 성공 후 결제 안내',
       },
     },
   },
 };
 
-export const VerticalButtons: Story = {
+export const FavoriteStore: Story = {
   args: {
-    title: '즐겨찾기하고 쿠폰 받기',
-    buttonLayout: 'vertical',
+    title: '',
     confirmText: '즐겨찾기하고 쿠폰 받기',
     cancelText: '취소',
+    buttonLayout: 'vertical',
     children: (
-      <div className='text-center space-y-4'>
+      <div className='space-y-2'>
         <p className='text-body'>
-          시조님의 상점을 즐겨찾기하면 쿠폰을 드려요! 지금 즐겨찾기하고 쿠폰을 받으시겠어요?
+          시조님의 상점을 즐겨찾기하면 쿠폰을
+          <br />
+          드려요! 지금 즐겨찾기하고 쿠폰을 받
+          <br />
+          으시겠어요?
         </p>
       </div>
     ),
@@ -292,29 +154,44 @@ export const VerticalButtons: Story = {
   parameters: {
     docs: {
       description: {
-        story: '버튼이 세로로 배치된 모달입니다. 주요 액션 버튼이 더 강조됩니다.',
+        story: '📱 두 번째 이미지와 동일한 모달: 상점 즐겨찾기 쿠폰 안내',
       },
     },
   },
 };
 
-export const VerticalDanger: Story = {
+export const HorizontalButtons: Story = {
   args: {
-    title: '계정 삭제',
-    variant: 'danger',
-    buttonLayout: 'vertical',
+    title: '로그아웃 하시겠습니까?',
+    confirmText: '로그아웃',
+    cancelText: '취소',
+    buttonLayout: 'horizontal',
+    children: <p className='text-body'>현재 세션이 종료되며 다시 로그인해야 합니다.</p>,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '🔧 가로 버튼 레이아웃: 동일한 중요도의 선택지',
+      },
+    },
+  },
+};
+
+export const VerticalButtons: Story = {
+  args: {
+    title: '계정을 삭제하시겠습니까?',
     confirmText: '계정 영구 삭제',
     cancelText: '취소',
+    buttonLayout: 'vertical',
     children: (
-      <div className='space-y-4'>
-        <div className='flex items-start gap-3'>
-          <div className='text-[var(--color-danger)]'>
-            <WarningIcon />
-          </div>
+      <div className='space-y-3'>
+        <div className='flex items-start gap-3 justify-center'>
+          <FiAlertTriangle width={20} height={20} className='text-[var(--color-danger)] mt-1' />
           <div>
-            <p className='text-body font-medium mb-2'>정말로 계정을 삭제하시겠습니까?</p>
-            <p className='text-caption'>
-              이 작업은 되돌릴 수 없으며, 모든 데이터가 영구적으로 삭제됩니다.
+            <p className='text-body'>
+              삭제된 계정은 복구할 수 없습니다.
+              <br />
+              모든 데이터가 영구적으로 삭제됩니다.
             </p>
           </div>
         </div>
@@ -324,132 +201,120 @@ export const VerticalDanger: Story = {
   parameters: {
     docs: {
       description: {
-        story: '위험한 액션의 경우 세로 레이아웃으로 신중한 선택을 유도할 수 있습니다.',
+        story: '🔧 세로 버튼 레이아웃: 주요 액션 강조 및 신중한 선택 유도',
       },
     },
   },
 };
 
-export const ButtonLayouts: Story = {
-  render: () => (
-    <div className='space-y-4'>
-      <div>
-        <h3 className='text-h3 mb-3'>가로 레이아웃 (기본)</h3>
-        <ModalWrapper
-          title='가로 버튼 레이아웃'
-          buttonLayout='horizontal'
-          confirmText='확인'
-          cancelText='취소'
-        >
-          <p className='text-body'>버튼이 나란히 배치됩니다.</p>
-        </ModalWrapper>
+export const NoButtons: Story = {
+  args: {
+    title: '알림',
+    hideActions: true,
+    children: (
+      <div className='space-y-4'>
+        <div className='flex items-center justify-center gap-3'>
+          <FiCheckCircle width={24} height={24} className='text-[var(--color-alert)]' />
+          <p className='text-body'>설정이 저장되었습니다!</p>
+        </div>
       </div>
-
-      <div>
-        <h3 className='text-h3 mb-3'>세로 레이아웃</h3>
-        <ModalWrapper
-          title='세로 버튼 레이아웃'
-          buttonLayout='vertical'
-          confirmText='확인'
-          cancelText='취소'
-        >
-          <p className='text-body'>버튼이 세로로 배치되어 주요 액션이 강조됩니다.</p>
-        </ModalWrapper>
-      </div>
-    </div>
-  ),
+    ),
+  },
   parameters: {
     docs: {
       description: {
-        story: '가로와 세로 버튼 레이아웃을 비교해볼 수 있습니다.',
+        story: '🔧 버튼 없는 모달: 단순 알림용, X 버튼으로만 닫기',
       },
     },
   },
 };
 
-// === 실제 사용 예시 ===
+// === 🛍️ 경매 앱 실제 사용 예시 ===
 
-export const RealWorldExamples: Story = {
-  render: () => (
-    <div className='space-y-6'>
+export const AuctionScenarios: Story = {
+  render: (args) => (
+    <div className='space-y-4'>
       <div>
-        <h3 className='text-h3 mb-3'>로그아웃 확인</h3>
-        <ModalWrapper
-          title='로그아웃'
-          variant='default'
-          confirmText='로그아웃'
-          cancelText='취소'
-          onConfirm={() => console.log('로그아웃')}
-          onCancel={() => console.log('로그아웃 취소')}
-        >
-          <p className='text-body'>정말로 로그아웃 하시겠습니까?</p>
-        </ModalWrapper>
-      </div>
-
-      <div>
-        <h3 className='text-h3 mb-3'>입찰 확인</h3>
-        <ModalWrapper
-          title='입찰 확인'
-          variant='default'
-          confirmText='입찰하기'
-          cancelText='취소'
-          onConfirm={() => console.log('입찰 진행')}
-          onCancel={() => console.log('입찰 취소')}
-        >
-          <div className='space-y-3'>
-            <div className='bg-[var(--color-background)] p-3 rounded-lg'>
-              <p className='text-caption text-[var(--color-sub-body)] mb-1'>입찰 금액</p>
-              <p className='text-h3 text-[var(--color-main)]'>50,000원</p>
-            </div>
-            <p className='text-caption text-[var(--color-sub-body)]'>
-              입찰 후에는 취소할 수 없습니다.
-            </p>
-          </div>
-        </ModalWrapper>
-      </div>
-
-      <div>
-        <h3 className='text-h3 mb-3'>계정 삭제</h3>
-        <ModalWrapper
-          title='계정 삭제'
-          variant='danger'
-          confirmText='영구 삭제'
-          cancelText='취소'
-          onConfirm={() => console.log('계정 삭제')}
-          onCancel={() => console.log('삭제 취소')}
-        >
-          <div className='space-y-4'>
-            <div className='flex items-start gap-3'>
-              <div className='text-[var(--color-danger)]'>
-                <WarningIcon />
+        <h3 className='text-h3 mb-3'>💰 경매 관련 모달들</h3>
+        <div className='flex flex-wrap gap-3'>
+          {/* 입찰 확인 */}
+          <ModalWrapper
+            title='입찰 확인'
+            confirmText='입찰하기'
+            cancelText='취소'
+            buttonLayout='horizontal'
+          >
+            <div className='space-y-3'>
+              <div className='bg-[var(--color-background)] p-3 rounded-lg'>
+                <p className='text-caption text-[var(--color-sub-body)] mb-1'>입찰 금액</p>
+                <p className='text-h3 text-[var(--color-main)]'>50,000원</p>
               </div>
-              <div>
-                <p className='text-body font-medium mb-2'>계정을 영구적으로 삭제하시겠습니까?</p>
-                <p className='text-caption text-[var(--color-sub-body)]'>
-                  이 작업은 되돌릴 수 없으며, 모든 데이터가 완전히 삭제됩니다.
-                </p>
-              </div>
+              <p className='text-caption text-[var(--color-sub-body)]'>
+                입찰 후에는 취소할 수 없습니다.
+              </p>
             </div>
-          </div>
-        </ModalWrapper>
+          </ModalWrapper>
+
+          {/* 경매 마감 임박 */}
+          <ModalWrapper
+            title='경매 마감 임박!'
+            confirmText='지금 입찰하기'
+            cancelText='나중에'
+            buttonLayout='vertical'
+          >
+            <div className='space-y-3'>
+              <div className='flex items-center justify-center gap-2 text-[var(--color-warning)]'>
+                <FiClock width={20} height={20} />
+                <span className='text-body font-medium'>3분 남음</span>
+              </div>
+              <p className='text-body'>
+                마지막 기회입니다!
+                <br />
+                지금 입찰하지 않으면 놓칠 수 있어요.
+              </p>
+            </div>
+          </ModalWrapper>
+
+          {/* 관심 상품 등록 */}
+          <ModalWrapper
+            title='관심 상품으로 등록할까요?'
+            confirmText='관심 상품 등록'
+            cancelText='나중에'
+            buttonLayout='vertical'
+          >
+            <div className='space-y-3'>
+              <div className='flex items-center justify-center'>
+                <FiHeart width={24} height={24} className='text-[var(--color-danger)]' />
+              </div>
+              <p className='text-body'>
+                가격 변동이나 경매 시작 시
+                <br />
+                알림을 받을 수 있어요.
+              </p>
+            </div>
+          </ModalWrapper>
+        </div>
       </div>
 
       <div>
-        <h3 className='text-h3 mb-3'>위치 권한 요청</h3>
-        <ModalWrapper
-          title='위치 권한이 필요합니다'
-          variant='default'
-          confirmText='권한 허용'
-          cancelText='나중에'
-          onConfirm={() => console.log('위치 권한 허용')}
-          onCancel={() => console.log('권한 거부')}
-        >
-          <div className='space-y-4'>
-            <div className='flex items-start gap-3'>
-              <InfoIcon />
+        <h3 className='text-h3 mb-3'>📍 위치/권한 관련 모달들</h3>
+        <div className='flex flex-wrap gap-3'>
+          {/* 위치 권한 요청 */}
+          <ModalWrapper
+            title='위치 권한이 필요합니다'
+            confirmText='권한 허용'
+            cancelText='나중에'
+            buttonLayout='vertical'
+          >
+            <div className='space-y-3'>
+              <div className='flex items-center justify-center'>
+                <FiMapPin width={24} height={24} className='text-[var(--color-main)]' />
+              </div>
               <div>
                 <p className='text-body mb-2'>
-                  주변 경매 정보를 제공하기 위해 위치 권한이 필요합니다.
+                  주변 경매 정보를 제공하기 위해
+                  <br />
+                  위치 권한이 필요합니다.
                 </p>
                 <ul className='text-caption text-[var(--color-sub-body)] space-y-1'>
                   <li>• 내 주변 경매 찾기</li>
@@ -458,112 +323,172 @@ export const RealWorldExamples: Story = {
                 </ul>
               </div>
             </div>
-          </div>
-        </ModalWrapper>
+          </ModalWrapper>
+
+          {/* 상점 평가 */}
+          <ModalWrapper
+            title='거래가 완료되었나요?'
+            confirmText='평가하기'
+            cancelText='나중에'
+            buttonLayout='vertical'
+          >
+            <div className='space-y-3'>
+              <div className='flex items-center justify-center gap-1'>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FiStar
+                    key={star}
+                    width={20}
+                    height={20}
+                    className='text-[var(--color-warning)]'
+                  />
+                ))}
+              </div>
+              <p className='text-body'>
+                판매자에 대한 평가를 남겨주세요.
+                <br />
+                다른 구매자들에게 도움이 됩니다.
+              </p>
+            </div>
+          </ModalWrapper>
+        </div>
       </div>
     </div>
   ),
+  args: {
+    children: '경매 앱 시나리오 예시들',
+    title: '경매 앱 모달들',
+    confirmText: '확인',
+    cancelText: '취소',
+  },
   parameters: {
     docs: {
       description: {
-        story: '실제 경매 앱에서 사용될 수 있는 모달 예시들입니다.',
+        story: '🛍️ 실제 경매 앱에서 사용될 수 있는 다양한 모달 시나리오들입니다.',
       },
     },
   },
 };
 
-// === 복잡한 콘텐츠 예시 ===
-
-export const ComplexContent: Story = {
+export const InteractionOptions: Story = {
   render: () => (
-    <ModalWrapper
-      title='상품 신고하기'
-      size='lg'
-      confirmText='신고하기'
-      cancelText='취소'
-      onConfirm={() => console.log('신고 접수')}
-      onCancel={() => console.log('신고 취소')}
-    >
-      <div className='space-y-4'>
-        <div>
-          <label className='block text-body font-medium mb-2'>신고 사유를 선택해주세요</label>
-          <div className='space-y-2'>
-            {['허위 정보', '사기 의심', '부적절한 이미지', '금지된 상품', '기타'].map((reason) => (
-              <label key={reason} className='flex items-center gap-2'>
-                <input
-                  type='radio'
-                  name='report-reason'
-                  value={reason}
-                  className='text-[var(--color-main)]'
-                />
-                <span className='text-body'>{reason}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+    <div className='space-y-4'>
+      <div>
+        <h3 className='text-h3 mb-3'>🔧 상호작용 옵션 테스트</h3>
+        <div className='flex flex-wrap gap-3'>
+          {/* 배경 클릭 비활성화 */}
+          <ModalWrapper
+            title='중요한 선택'
+            confirmText='확인'
+            cancelText='취소'
+            closeOnBackdropClick={false}
+            buttonLayout='horizontal'
+          >
+            <p className='text-body'>
+              배경을 클릭해도 닫히지 않습니다.
+              <br />
+              반드시 버튼을 선택해주세요.
+            </p>
+          </ModalWrapper>
 
-        <div>
-          <label className='block text-body font-medium mb-2'>상세 내용 (선택사항)</label>
-          <textarea
-            className='w-full p-3 border border-[var(--color-line)] rounded-lg resize-none'
-            rows={3}
-            placeholder='신고 사유에 대해 자세히 설명해주세요.'
-          />
-        </div>
-
-        <div className='bg-[var(--color-background)] p-3 rounded-lg'>
-          <p className='text-caption text-[var(--color-sub-body)]'>
-            신고해주신 내용은 검토 후 24시간 내에 처리됩니다.
-          </p>
+          {/* ESC 키 비활성화 */}
+          <ModalWrapper
+            title='필수 확인'
+            confirmText='동의'
+            closeOnEscape={false}
+            buttonLayout='vertical'
+          >
+            <p className='text-body'>
+              ESC 키로 닫을 수 없습니다.
+              <br />
+              반드시 동의 버튼을 눌러주세요.
+            </p>
+          </ModalWrapper>
         </div>
       </div>
-    </ModalWrapper>
+    </div>
   ),
+  args: {
+    children: '상호작용 옵션 테스트',
+    title: '상호작용 테스트',
+    confirmText: '확인',
+    closeOnBackdropClick: true,
+    closeOnEscape: true,
+  },
   parameters: {
     docs: {
       description: {
-        story: '폼과 같은 복잡한 콘텐츠를 포함한 모달 예시입니다.',
+        story: '🔧 다양한 상호작용 옵션들을 테스트할 수 있습니다.',
       },
     },
   },
 };
 
-// === 인터랙티브 테스트 ===
+export const AccessibilityTest: Story = {
+  args: {
+    title: '접근성 테스트',
+    confirmText: '확인',
+    cancelText: '취소',
+    ariaLabel: '접근성 테스트 모달',
+    children: (
+      <div className='space-y-4'>
+        <p className='text-body'>이 모달은 접근성을 고려하여 설계되었습니다.</p>
+        <ul className='text-caption space-y-1 text-left'>
+          <li>• Tab 키로 요소 간 이동 가능</li>
+          <li>• ESC 키로 모달 닫기</li>
+          <li>• 스크린 리더 지원</li>
+          <li>• 모달 열림 시 자동 포커스</li>
+          <li>• 배경 스크롤 방지</li>
+        </ul>
+      </div>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '♿ 키보드 네비게이션과 스크린 리더 지원을 테스트할 수 있습니다.',
+      },
+    },
+  },
+};
 
 export const Interactive: Story = {
-  render: (args) => {
+  render: () => {
     const [result, setResult] = useState('');
-
-    const handleConfirm = () => {
-      setResult('확인 버튼이 클릭되었습니다!');
-    };
-
-    const handleCancel = () => {
-      setResult('취소 버튼이 클릭되었습니다!');
-    };
 
     return (
       <div className='space-y-4'>
-        <ModalWrapper {...args} onConfirm={handleConfirm} onCancel={handleCancel} />
+        <ModalWrapper
+          title='인터랙티브 테스트'
+          confirmText='확인'
+          cancelText='취소'
+          onConfirm={() => setResult('✅ 확인 버튼이 클릭되었습니다!')}
+          onCancel={() => setResult('❌ 취소 버튼이 클릭되었습니다!')}
+        >
+          <p className='text-body'>
+            버튼을 클릭하여 모달의 동작을 테스트해보세요.
+            <br />
+            결과가 아래에 표시됩니다.
+          </p>
+        </ModalWrapper>
 
         {result && (
           <div className='p-4 bg-[var(--color-main-lightest)] rounded-lg'>
-            <p className='text-body text-[var(--color-main-text)]'>결과: {result}</p>
+            <p className='text-body text-[var(--color-main-text)]'>{result}</p>
           </div>
         )}
       </div>
     );
   },
   args: {
+    children: '인터랙티브 테스트 내용',
     title: '인터랙티브 테스트',
     confirmText: '확인',
     cancelText: '취소',
-    children: <p className='text-body'>버튼을 클릭하여 모달의 동작을 테스트해보세요.</p>,
   },
   parameters: {
     docs: {
       description: {
-        story: '실제로 상호작용해볼 수 있는 인터랙티브 모달입니다.',
+        story: '🔧 실제로 상호작용해볼 수 있는 인터랙티브 모달입니다.',
       },
     },
   },

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { FiX } from 'react-icons/fi';
 import { Button } from '../Button/Button';
 
 export interface ModalProps {
@@ -10,30 +11,13 @@ export interface ModalProps {
   onCancel?: () => void;
   confirmText?: string;
   cancelText?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-  variant?: 'default' | 'danger' | 'success' | 'warning';
+  buttonLayout?: 'horizontal' | 'vertical';
+  hideActions?: boolean;
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
-  showCloseButton?: boolean;
-  hideActions?: boolean;
   ariaLabel?: string;
-  ariaDescribedBy?: string;
-  buttonLayout?: 'horizontal' | 'vertical';
   className?: string;
 }
-
-// X 닫기 아이콘 컴포넌트
-const CloseIcon: React.FC = () => (
-  <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <path
-      d='M18 6L6 18M6 6L18 18'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -44,19 +28,15 @@ export const Modal: React.FC<ModalProps> = ({
   onCancel,
   confirmText = '확인',
   cancelText = '취소',
-  size = 'md',
-  variant = 'default',
+  buttonLayout = 'horizontal',
+  hideActions = false,
   closeOnBackdropClick = true,
   closeOnEscape = true,
-  showCloseButton = true,
-  hideActions = false,
-  buttonLayout = 'horizontal',
   ariaLabel,
-  ariaDescribedBy,
   className = '',
   ...props
 }) => {
-  // ESC 키 이벤트 처리
+  // 🔧 ESC 키 이벤트 처리
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape' && closeOnEscape) {
@@ -66,14 +46,14 @@ export const Modal: React.FC<ModalProps> = ({
     [closeOnEscape, onClose]
   );
 
-  // 배경 클릭 처리
+  // 배경 클릭 시
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget && closeOnBackdropClick) {
       onClose();
     }
   };
 
-  // 확인 버튼 처리
+  // 확인
   const handleConfirm = () => {
     if (onConfirm) {
       onConfirm();
@@ -82,7 +62,7 @@ export const Modal: React.FC<ModalProps> = ({
     }
   };
 
-  // 취소 버튼 처리
+  // 취소
   const handleCancel = () => {
     if (onCancel) {
       onCancel();
@@ -91,7 +71,7 @@ export const Modal: React.FC<ModalProps> = ({
     }
   };
 
-  // 모달이 열릴 때 부수 효과 처리
+  // 모달이 열릴 때
   useEffect(() => {
     if (!isOpen) return;
 
@@ -112,11 +92,11 @@ export const Modal: React.FC<ModalProps> = ({
       );
       const firstElement = focusableElements[0] as HTMLElement;
       if (firstElement) {
-        firstElement.focus();
+        setTimeout(() => firstElement.focus(), 100); // 애니메이션 후 포커스
       }
     }
 
-    // 클린업 함수
+    // 클린업
     return () => {
       document.body.style.overflow = originalOverflow;
       if (closeOnEscape) {
@@ -128,38 +108,9 @@ export const Modal: React.FC<ModalProps> = ({
   // 모달이 닫혀있으면 렌더링하지 않음
   if (!isOpen) return null;
 
-  // 크기별 스타일
-  const sizeStyles = {
-    sm: 'max-w-sm w-full mx-4',
-    md: 'max-w-md w-full mx-4',
-    lg: 'max-w-lg w-full mx-4',
-    xl: 'max-w-xl w-full mx-4',
-    full: 'w-full h-full m-0 rounded-none',
-  };
-
-  // 변형별 스타일
-  const variantStyles = {
-    default: {
-      confirmButton: 'primary' as const,
-      cancelButton: 'secondary' as const,
-    },
-    danger: {
-      confirmButton: 'danger' as const,
-      cancelButton: 'secondary' as const,
-    },
-    success: {
-      confirmButton: 'primary' as const,
-      cancelButton: 'secondary' as const,
-    },
-    warning: {
-      confirmButton: 'primary' as const,
-      cancelButton: 'secondary' as const,
-    },
-  };
-
   return (
     <div
-      className='fixed inset-0 z-[var(--z-modal-backdrop)] overflow-y-auto'
+      className='fixed inset-0 z-[var(--z-modal-backdrop)] flex items-end justify-center'
       style={{ zIndex: 'var(--z-modal-backdrop)' }}
     >
       {/* 배경 오버레이 */}
@@ -169,108 +120,98 @@ export const Modal: React.FC<ModalProps> = ({
         aria-hidden='true'
       />
 
-      {/* 모달 컨테이너 */}
-      <div className='flex min-h-full items-center justify-center p-4'>
-        <div
-          data-modal='true'
-          className={`
-            relative bg-white rounded-[var(--modal-border-radius)]
-            shadow-[var(--shadow-modal)]
-            animate-scale-in
-            ${sizeStyles[size]}
-            ${className}
-          `}
-          role='dialog'
-          aria-modal='true'
-          aria-label={ariaLabel || title}
-          aria-describedby={ariaDescribedBy}
-          style={{ zIndex: 'var(--z-modal)' }}
-          {...props}
+      {/* 바텀 모달 컨테이너 */}
+      <div
+        data-modal='true'
+        className={`
+          relative bg-white
+          w-[310px] mx-auto mb-0
+          pt-[30px] pb-[35px] px-[25px]
+          animate-slide-up
+          ${className}
+        `}
+        style={{
+          borderRadius: '18px 18px 0px 0px',
+          boxShadow: '3px 3px 15px 0px rgba(0, 0, 0, 0.10)',
+          zIndex: 'var(--z-modal)',
+        }}
+        role='dialog'
+        aria-modal='true'
+        aria-label={ariaLabel || title}
+        {...props}
+      >
+        {/* 닫기 버튼 (우상단 고정) */}
+        <button
+          onClick={onClose}
+          className='
+            absolute top-[15px] right-[15px]
+            p-2 rounded-lg
+            text-[var(--color-sub-body)] 
+            hover:text-[var(--color-body)]
+            hover:bg-[var(--color-background)]
+            transition-colors duration-200
+            focus:outline-none focus:ring-2 
+            focus:ring-[var(--color-main)] focus:ring-offset-2
+          '
+          aria-label='모달 닫기'
         >
-          {/* 헤더 영역 */}
-          {(title || showCloseButton) && (
-            <div className='flex items-center justify-between p-6 pb-4'>
-              {title && <h2 className='text-h2 text-[var(--color-title)] pr-8'>{title}</h2>}
+          <FiX width={20} height={20} />
+        </button>
 
-              {showCloseButton && (
-                <button
-                  onClick={onClose}
-                  className='
-                    absolute top-4 right-4
-                    p-2 rounded-lg
-                    text-[var(--color-sub-body)] 
-                    hover:text-[var(--color-body)]
-                    hover:bg-[var(--color-background)]
-                    transition-colors duration-150
-                    focus:outline-none focus:ring-2 
-                    focus:ring-[var(--color-main)] focus:ring-offset-2
-                  '
-                  aria-label='모달 닫기'
-                >
-                  <CloseIcon />
-                </button>
-              )}
-            </div>
-          )}
+        {/* 제목 */}
+        {title && (
+          <div className='mb-4'>
+            <h2 className='text-h2 text-[var(--color-title)] text-center'>{title}</h2>
+          </div>
+        )}
 
-          {/* 본문 영역 */}
-          <div className={`px-6 ${title || showCloseButton ? 'pb-6' : 'py-6'}`}>{children}</div>
+        {/* 본문 */}
+        <div className='mb-6 text-center'>{children}</div>
 
-          {/* 액션 버튼 영역 */}
-          {!hideActions && (onConfirm || onCancel) && (
-            <div
-              className={`px-6 pb-6 ${buttonLayout === 'vertical' ? 'space-y-3' : 'flex gap-3'}`}
-            >
-              {buttonLayout === 'vertical' ? (
-                // 세로 레이아웃 (확인 버튼이 위에)
-                <>
-                  {onConfirm && (
-                    <Button
-                      variant={variantStyles[variant].confirmButton}
-                      onClick={handleConfirm}
-                      width='full'
-                    >
-                      {confirmText}
-                    </Button>
-                  )}
+        {/* 액션 버튼 */}
+        {!hideActions && (onConfirm || onCancel) && (
+          <div className={buttonLayout === 'vertical' ? 'space-y-3' : 'flex gap-3'}>
+            {buttonLayout === 'vertical' ? (
+              // 세로 레이아웃 (확인 버튼이 위에)
+              <>
+                {onConfirm && (
+                  <Button
+                    variant='primary'
+                    onClick={handleConfirm}
+                    className='w-full' // 패딩 제외한 전체 너비
+                  >
+                    {confirmText}
+                  </Button>
+                )}
 
-                  {onCancel && (
-                    <Button
-                      variant={variantStyles[variant].cancelButton}
-                      onClick={handleCancel}
-                      width='full'
-                    >
-                      {cancelText}
-                    </Button>
-                  )}
-                </>
-              ) : (
-                // 가로 레이아웃 (기존 방식)
-                <>
-                  {onCancel && (
-                    <Button
-                      variant={variantStyles[variant].cancelButton}
-                      onClick={handleCancel}
-                      className='flex-1'
-                    >
-                      {cancelText}
-                    </Button>
-                  )}
+                {onCancel && (
+                  <Button variant='secondary' onClick={handleCancel} className='w-full'>
+                    {cancelText}
+                  </Button>
+                )}
+              </>
+            ) : (
+              // 가로 레이아웃
+              <>
+                {onCancel && (
+                  <Button
+                    variant='secondary'
+                    onClick={handleCancel}
+                    className='flex-1' // 동일한 너비로 분할
+                  >
+                    {cancelText}
+                  </Button>
+                )}
 
-                  {onConfirm && (
-                    <Button
-                      variant={variantStyles[variant].confirmButton}
-                      onClick={handleConfirm}
-                      className='flex-1'
-                    >
-                      {confirmText}
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </div>
+                {onConfirm && (
+                  <Button variant='primary' onClick={handleConfirm} className='flex-1'>
+                    {confirmText}
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

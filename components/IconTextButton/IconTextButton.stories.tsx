@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { IconTextButton } from './IconTextButton'; 
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconTextButton } from './IconTextButton';
 
 const meta: Meta<typeof IconTextButton> = {
-  title: 'Example/IconTextButton',
+  title: 'components/IconTextButton',
   component: IconTextButton,
   tags: ['autodocs'],
   args: {

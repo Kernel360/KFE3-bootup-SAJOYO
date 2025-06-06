@@ -1,76 +1,74 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './Button';
+// React Icons 예시 (실제 프로젝트에서 사용할 아이콘들)
+import {
+  FiArrowRight,
+  FiDownload,
+  FiEdit3,
+  FiHeart,
+  FiPlus,
+  FiSearch,
+  FiSettings,
+  FiShare2,
+  FiTrash2,
+  FiUser,
+} from 'react-icons/fi';
 
-const PlusIcon = () => (
-  <svg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <path
-      d='M12 5V19M5 12H19'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
-
-const ArrowRightIcon = () => (
-  <svg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <path
-      d='M5 12H19M19 12L12 5M19 12L12 19'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
-
-const DownloadIcon = () => (
-  <svg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-    <path
-      d='M21 15V19A2 2 0 0119 21H5A2 2 0 013 19V15M7 10L12 15L17 10M12 15V3'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
-
-const meta: Meta<typeof Button> = {
-  title: 'components/Button',
+const meta = {
+  title: 'Components/Button',
   component: Button,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: `
+## Button 컴포넌트
+
+지역기반 중고거래 경매 모바일 웹앱에 최적화된 버튼 컴포넌트입니다.
+
+### 🎯 설계 원칙
+- **단일 책임 원칙**: 사용자 클릭 액션만 담당
+- **의존성 최소화**: react-icons만 의존, 완전히 독립적
+- **아토믹 디자인**: Atom 레벨의 기본 요소
+
+### 📋 설계 기준 적용
+1. **디자인 시스템 기반**: CSS 변수 활용, 일관된 스타일
+2. **API 설계 기준**: 직관적인 Props 네이밍  
+3. **재사용성 기준**: 3가지 버튼 타입 지원
+
+### 🔧 3가지 버튼 타입
+- **아이콘만**: 최소한의 공간을 차지하는 액션 버튼
+- **텍스트만**: 명확한 라벨이 있는 일반 버튼
+- **아이콘+텍스트**: 시각적 힌트와 명확한 라벨을 모두 제공
+
+### 🎨 스타일 가이드
+- **폰트 크기**: 16px
+- **테두리**: 3px 둥근 모서리
+- **패딩**: 일반 버튼 15px, 아이콘만 20px
+- **아이콘 크기**: 16px
+- **호버 효과**: disabled 상태에서는 비활성화
+        `,
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'ghost', 'outline', 'danger'],
+      options: ['primary', 'secondary', 'ghost'],
       description: '버튼의 시각적 스타일 변형',
-    },
-    size: {
-      control: { type: 'select' },
-      options: ['sm', 'md', 'lg'],
-      description: '버튼 크기 (모바일 최적화)',
-    },
-    width: {
-      control: { type: 'select' },
-      options: ['auto', 'full'],
-      description: '버튼 너비 설정',
     },
     disabled: {
       control: 'boolean',
       description: '버튼 비활성화 상태',
     },
-    loading: {
-      control: 'boolean',
-      description: '로딩 상태 (스피너 표시)',
-    },
     children: {
       control: 'text',
-      description: '버튼 내용',
+      description: '버튼 텍스트 (아이콘만 있는 버튼은 생략 가능)',
+    },
+    ariaLabel: {
+      control: 'text',
+      description: '접근성을 위한 aria-label (아이콘만 있는 버튼에 필수)',
     },
     onClick: {
       action: 'clicked',
@@ -82,11 +80,12 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// === 📏 기본 변형별 스토리 ===
+
 export const Primary: Story = {
   args: {
     variant: 'primary',
     children: '확인',
-    type: "reset"
   },
 };
 
@@ -104,145 +103,71 @@ export const Ghost: Story = {
   },
 };
 
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: '둘러보기',
-  },
-};
+// === 🔧 3가지 버튼 타입 시연 ===
 
-export const Danger: Story = {
-  args: {
-    variant: 'danger',
-    children: '삭제',
-  },
-};
-
-// === 크기별 스토리 ===
-
-export const Sizes: Story = {
-  render: () => (
-    <div className='flex flex-col gap-4 items-start'>
-      <div className='space-y-2'>
-        <p className='text-caption'>Small (36px)</p>
-        <Button size='sm' variant='primary'>
-          Small Button
-        </Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>Medium (44px) - 권장</p>
-        <Button size='md' variant='primary'>
-          Medium Button
-        </Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>Large (48px)</p>
-        <Button size='lg' variant='primary'>
-          Large Button
-        </Button>
-      </div>
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: '모바일 터치에 최적화된 3가지 크기입니다. Medium(44px)이 권장 크기입니다.',
-      },
-    },
-  },
-};
-
-// === 상태별 스토리 ===
-
-export const States: Story = {
-  render: () => (
-    <div className='grid grid-cols-2 gap-4'>
-      <div className='space-y-2'>
-        <p className='text-caption'>기본 상태</p>
-        <Button variant='primary'>확인</Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>비활성화</p>
-        <Button variant='primary' disabled>
-          확인
-        </Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>로딩 중</p>
-        <Button variant='primary' loading>
-          처리중...
-        </Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>전체 너비</p>
-        <Button variant='primary' width='full'>
-          전체 너비 버튼
-        </Button>
-      </div>
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: '버튼의 다양한 상태들입니다. 로딩 상태에서는 스피너가 표시됩니다.',
-      },
-    },
-  },
-};
-
-// === 아이콘과 함께 사용 ===
-
-export const WithIcons: Story = {
-  render: () => (
-    <div className='space-y-4'>
-      <div className='space-y-2'>
-        <p className='text-caption'>왼쪽 아이콘</p>
-        <Button variant='primary' leftIcon={<PlusIcon />}>
-          추가하기
-        </Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>오른쪽 아이콘</p>
-        <Button variant='outline' rightIcon={<ArrowRightIcon />}>
-          다음 단계
-        </Button>
-      </div>
-      <div className='space-y-2'>
-        <p className='text-caption'>아이콘만</p>
-        <Button variant='ghost' leftIcon={<DownloadIcon />} aria-label='다운로드'>
-          <span className='sr-only'>다운로드</span>
-        </Button>
-      </div>
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: '아이콘을 포함한 버튼들입니다. 로딩 상태에서는 아이콘이 스피너로 대체됩니다.',
-      },
-    },
-  },
-};
-
-// === 모든 변형 한번에 보기 ===
-
-export const AllVariants: Story = {
+export const ButtonTypes: Story = {
   render: () => (
     <div className='space-y-6'>
       <div>
-        <h3 className='text-h3 mb-3'>기본 상태</h3>
-        <div className='flex flex-wrap gap-2'>
-          <Button variant='primary'>Primary</Button>
-          <Button variant='secondary'>Secondary</Button>
-          <Button variant='ghost'>Ghost</Button>
-          <Button variant='outline'>Outline</Button>
-          <Button variant='danger'>Danger</Button>
+        <h3 className='text-h3 mb-3'>📝 텍스트만 있는 버튼</h3>
+        <div className='flex gap-3'>
+          <Button variant='primary'>입찰하기</Button>
+          <Button variant='secondary'>관심등록</Button>
+          <Button variant='ghost'>더보기</Button>
         </div>
       </div>
 
       <div>
-        <h3 className='text-h3 mb-3'>비활성화 상태</h3>
-        <div className='flex flex-wrap gap-2'>
+        <h3 className='text-h3 mb-3'>🔤 아이콘+텍스트 버튼</h3>
+        <div className='flex gap-3'>
+          <Button variant='primary' Icon={FiPlus}>
+            상품 등록
+          </Button>
+          <Button variant='secondary' Icon={FiHeart}>
+            관심 상품
+          </Button>
+          <Button variant='ghost' Icon={FiShare2}>
+            공유하기
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>🎯 아이콘만 있는 버튼</h3>
+        <div className='flex gap-3'>
+          <Button variant='primary' Icon={FiPlus} ariaLabel='추가' />
+          <Button variant='secondary' Icon={FiHeart} ariaLabel='좋아요' />
+          <Button variant='ghost' Icon={FiShare2} ariaLabel='공유' />
+        </div>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: '3가지 버튼 타입을 모두 보여주는 예시입니다. 각각의 사용 시나리오가 다릅니다.',
+      },
+    },
+  },
+};
+
+// === 🎨 상태별 스토리 ===
+
+export const States: Story = {
+  render: () => (
+    <div className='space-y-6'>
+      <div>
+        <h3 className='text-h3 mb-3'>✅ 활성화 상태</h3>
+        <div className='flex gap-3'>
+          <Button variant='primary'>Primary</Button>
+          <Button variant='secondary'>Secondary</Button>
+          <Button variant='ghost'>Ghost</Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>❌ 비활성화 상태</h3>
+        <div className='flex gap-3'>
           <Button variant='primary' disabled>
             Primary
           </Button>
@@ -252,12 +177,22 @@ export const AllVariants: Story = {
           <Button variant='ghost' disabled>
             Ghost
           </Button>
-          <Button variant='outline' disabled>
-            Outline
-          </Button>
-          <Button variant='danger' disabled>
-            Danger
-          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>🔧 아이콘 버튼 상태</h3>
+        <div className='space-y-3'>
+          <div className='flex gap-3'>
+            <Button variant='primary' Icon={FiEdit3} ariaLabel='수정' />
+            <Button variant='secondary' Icon={FiDownload} ariaLabel='다운로드' />
+            <Button variant='ghost' Icon={FiSettings} ariaLabel='설정' />
+          </div>
+          <div className='flex gap-3'>
+            <Button variant='primary' Icon={FiEdit3} disabled ariaLabel='수정' />
+            <Button variant='secondary' Icon={FiDownload} disabled ariaLabel='다운로드' />
+            <Button variant='ghost' Icon={FiSettings} disabled ariaLabel='설정' />
+          </div>
         </div>
       </div>
     </div>
@@ -265,7 +200,195 @@ export const AllVariants: Story = {
   parameters: {
     docs: {
       description: {
-        story: '모든 버튼 변형을 한번에 확인할 수 있습니다.',
+        story:
+          '버튼의 활성화/비활성화 상태를 보여줍니다. 비활성화 상태에서는 호버 효과가 없습니다.',
+      },
+    },
+  },
+};
+
+// === 🛍️ 경매 앱 실제 사용 예시 ===
+
+export const AuctionAppExamples: Story = {
+  render: () => (
+    <div className='space-y-6 max-w-sm'>
+      <div>
+        <h3 className='text-h3 mb-3'>🏠 홈화면 액션</h3>
+        <div className='space-y-2'>
+          <Button variant='primary' Icon={FiPlus} className='w-full'>
+            상품 등록하기
+          </Button>
+          <div className='flex gap-2'>
+            <Button variant='secondary' Icon={FiSearch} className='flex-1'>
+              검색
+            </Button>
+            <Button variant='ghost' Icon={FiUser} ariaLabel='프로필' />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>💰 경매 상세 페이지</h3>
+        <div className='space-y-2'>
+          <Button variant='primary' className='w-full'>
+            입찰하기
+          </Button>
+          <div className='flex gap-2'>
+            <Button variant='secondary' Icon={FiHeart} className='flex-1'>
+              관심 등록
+            </Button>
+            <Button variant='ghost' Icon={FiShare2} ariaLabel='공유하기' />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>⚙️ 관리 액션</h3>
+        <div className='flex gap-2'>
+          <Button variant='ghost' Icon={FiEdit3}>
+            수정
+          </Button>
+          <Button variant='secondary' Icon={FiDownload}>
+            다운로드
+          </Button>
+          <Button variant='primary' Icon={FiTrash2}>
+            삭제
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>🎯 빠른 액션 (아이콘만)</h3>
+        <div className='flex gap-2 justify-center'>
+          <Button variant='ghost' Icon={FiHeart} ariaLabel='좋아요' />
+          <Button variant='ghost' Icon={FiShare2} ariaLabel='공유' />
+          <Button variant='ghost' Icon={FiDownload} ariaLabel='다운로드' />
+          <Button variant='ghost' Icon={FiSettings} ariaLabel='설정' />
+        </div>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '실제 경매 앱에서 사용될 수 있는 버튼 조합 예시들입니다. 모바일 UI 패턴을 반영했습니다.',
+      },
+    },
+  },
+};
+
+// === 🎨 스타일 가이드 시연 ===
+
+export const StyleGuide: Story = {
+  render: () => (
+    <div className='space-y-6'>
+      <div>
+        <h3 className='text-h3 mb-3'>🎨 Primary 버튼 (메인 액션)</h3>
+        <div className='space-y-2'>
+          <p className='text-caption'>배경: #64B5F7, 텍스트: white, 호버: #045A9A</p>
+          <div className='flex gap-3 items-center'>
+            <Button variant='primary'>입찰하기</Button>
+            <Button variant='primary' Icon={FiArrowRight}>
+              다음 단계
+            </Button>
+            <Button variant='primary' Icon={FiPlus} ariaLabel='추가' />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>🎨 Secondary 버튼 (보조 액션)</h3>
+        <div className='space-y-2'>
+          <p className='text-caption'>배경: white, 테두리: #64B5F7, 텍스트: #64B5F7</p>
+          <div className='flex gap-3 items-center'>
+            <Button variant='secondary'>취소</Button>
+            <Button variant='secondary' Icon={FiHeart}>
+              관심등록
+            </Button>
+            <Button variant='secondary' Icon={FiShare2} ariaLabel='공유' />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className='text-h3 mb-3'>🎨 Ghost 버튼 (미니멀 액션)</h3>
+        <div className='space-y-2'>
+          <p className='text-caption'>배경: transparent, 텍스트: #64B5F7</p>
+          <div className='flex gap-3 items-center'>
+            <Button variant='ghost'>더보기</Button>
+            <Button variant='ghost' Icon={FiEdit3}>
+              수정
+            </Button>
+            <Button variant='ghost' Icon={FiSettings} ariaLabel='설정' />
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: '각 variant의 색상과 스타일을 자세히 보여주는 가이드입니다.',
+      },
+    },
+  },
+};
+
+// === ♿ 접근성 테스트 ===
+
+export const AccessibilityTest: Story = {
+  render: () => (
+    <div className='space-y-4'>
+      <div>
+        <h3 className='text-h3 mb-3'>♿ 접근성 테스트</h3>
+        <p className='text-caption mb-4'>Tab 키로 포커스 이동, Space/Enter로 클릭 테스트</p>
+        <div className='space-y-3'>
+          <div className='flex gap-2'>
+            <Button variant='primary'>포커스 테스트 1</Button>
+            <Button variant='secondary' Icon={FiHeart}>
+              포커스 테스트 2
+            </Button>
+            <Button variant='ghost' Icon={FiSettings} ariaLabel='설정 (아이콘만)' />
+          </div>
+
+          <div className='bg-[var(--color-background)] p-3 rounded-lg'>
+            <p className='text-caption'>
+              ✅ 아이콘만 있는 버튼에는 ariaLabel 필수
+              <br />
+              ✅ 포커스 링 표시
+              <br />
+              ✅ 키보드 네비게이션 지원
+              <br />✅ 적절한 색상 대비
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: '키보드 네비게이션과 스크린 리더 지원을 테스트할 수 있습니다.',
+      },
+    },
+  },
+};
+
+// === 🔧 인터랙티브 테스트 ===
+
+export const Interactive: Story = {
+  args: {
+    variant: 'primary',
+    children: '클릭해보세요!',
+    Icon: FiPlus,
+    onClick: () => alert('🎉 버튼이 클릭되었습니다!'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '실제로 클릭해볼 수 있는 인터랙티브 버튼입니다. Controls 패널에서 속성을 변경해보세요!',
       },
     },
   },
